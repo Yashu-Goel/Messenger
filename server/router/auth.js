@@ -24,11 +24,11 @@ router.post("/", async (req, res) => {
     } else if (password != cpassword) {
       return res
         .status(422)
-        .json({ error: "Password and Confirm Password must be same!" });
+        .json({error: "Password and Confirm Password must be same!"} );
     } else {
       const user = new User({ name, email, password, cpassword });
       await user.save();
-      res.status(201).json({ message: "User successfully Registered!" });
+      res.status(200).json({ message: "User successfully Registered!" });
     }
   } catch (error) {
     console.log("Error: " + error);
