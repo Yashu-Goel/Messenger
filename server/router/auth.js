@@ -12,26 +12,20 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { name, email, password, cpassword } = req.body;
-  if (!name || !email || !password || !cpassword) {
-    return res.status(422).json({ error: "Pls fill all the fields" });
-  }
 
+  const { name, password, email } = req.body;
   try {
     const UserExists = await User.findOne({ email: email });
+
     if (UserExists) {
-      return res.status(422).json({ error: "User already Exists" });
-    } else if (password != cpassword) {
-      return res
-        .status(422)
-        .json({error: "Password and Confirm Password must be same!"} );
+      return res.status(422).json("User already Exists");
     } else {
-      const user = new User({ name, email, password, cpassword });
+      const user = new User({ name, email, password });
       await user.save();
-      res.status(200).json({ message: "User successfully Registered!" });
+      res.status(200).json("User successfully Registered!");
     }
   } catch (error) {
-    console.log("Error: " + error);
+    res.status(422).json(`${error}`);
   }
 });
 

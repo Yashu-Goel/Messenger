@@ -6,16 +6,18 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Button,
-  Text
+  Button
 } from '@chakra-ui/react'
+
 const API_BASE = "http://localhost:5000/";
 const Login = () => {
+
   const [show, setShow] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   async function submitHandler(e) {
+
     e.preventDefault();
     //implement the backend here -> OK 
     const response = await fetch(API_BASE, {

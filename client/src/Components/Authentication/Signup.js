@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-import { Stack } from "@chakra-ui/react";
+import { Stack, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import {
   FormControl,
@@ -9,11 +9,16 @@ import {
   InputRightElement,
   Button,
 } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+
+// import { useNavigate } from "react-router-dom";
+
 const API_BASE = "http://localhost:5000/";
 const Signup = () => {
-  const navigate = useNavigate();
+
+  const toast = useToast();
   const [show, setShow] = useState(true);
+
+  // const navigate = useNavigate();
 
   const [user, setUser] = useState({
     name: "",
@@ -22,62 +27,63 @@ const Signup = () => {
     cpassword: "",
     pic: "",
   });
-  const postDetails = (pics) => {};
+  const postDetails = (pics) => { };
+
   const submitHandler = async (e) => {
-    const { name, email, password, cpassword } = user;
     e.preventDefault();
-    const response = await axios
-      .post(API_BASE, {
-        name,
-        email,
-        password,
-        cpassword,
+
+    const { name, email, password, cpassword } = user;
+
+    if (cpassword !== password) {
+      toast({
+        title: 'Wrong Details',
+        description: "Password not matching",
+        status: 'info',
+        duration: 2500,
+        isClosable: true,
       })
+      return;
+    }
+    if (!name || !email || !password || !cpassword) {
+      toast({
+        title: 'Complete the fills',
+        description: "Pls fill all the fields",
+        status: 'info',
+        duration: 2500,
+        isClosable: true,
+      })
+      return;
+    }
+
+    await axios.post(API_BASE, {
+      name,
+      email,
+      password
+    })
       .then((res) => {
-        console.log("res: " + res.data);
+        toast({
+          title: `${res.data}`,
+          description: `Redirecting to login page. . .`,
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        })
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000)
       })
       .catch((error) => {
-        console.log("Error: " + error.response.data.message);
+        toast({
+          title: 'Invalid Credentials',
+          description: `${error.response.data}`,
+          status: 'error',
+          duration: 2500,
+          isClosable: true,
+        })
       });
-      // console.log(response.status);
-      // console.log(response);
-    if (response && response.status === 200) {
-      window.alert(" Registration Successful");
-      navigate("/");
-    } else {
-      window.alert("Invalid Credential");
-    }
   };
-  // async function submitHandler(e) {
-  //     e.preventDefault();
-  //     //implement the backend here -> OK
-  //     const { name, email, password, cpassword } = user;
-
-  //     const response = await fetch(API_BASE, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         name,
-  //         email,
-  //         password,
-  //         cpassword,
-  //       }),
-  //     });
-
-  //     const data = await response.json();
-  //     if (response.status === 422 || !data) {
-  //       window.alert("Invalid Credential");
-  //     } else {
-  //       window.alert(" Registration Successful");
-  //       navigate("/");
-  //     }
-  // };
-  let name, value;
   const handleInputs = (e) => {
-    name = e.target.name;
-    value = e.target.value;
+    const { name, value } = e.target;
     setUser({ ...user, [name]: value });
   };
   return (
