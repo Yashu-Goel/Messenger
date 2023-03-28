@@ -1,42 +1,95 @@
-import { React, useState } from 'react'
+import { React, useState, useEffect } from 'react'
 import { Link, Stack } from '@chakra-ui/react'
+import axios from "axios";
+import {useNavigate} from 'react-router-dom'
 import {
   FormControl,
   FormLabel,
   Input,
   InputGroup,
   InputRightElement,
-  Button
+  Button,
+  useToast
 } from '@chakra-ui/react'
-
-const API_BASE = "http://localhost:5000/";
+import '../../App.css'
+const API_BASE = "http://localhost:5000";
 const Login = () => {
-
+  const toast = useToast();
+  const navigate= useNavigate();
   const [show, setShow] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  async function submitHandler(e) {
 
+  useEffect(()=>
+  {
+     const fetchData = async () => {
+       var token = localStorage.getItem("profile");
+       try {
+         const res = await axios.post(API_BASE +"/demo", {
+          token,
+         }).then((res)=>
+         {
+          navigate("/chats");
+          console.log('res: '+ res.data);
+         }).catch((error)=>
+         {
+          console.log("Error: "+ error);
+         })
+         
+         // handle successful response
+       } catch (error) {
+         // handle error
+         console.log(error);
+       }
+     };
+     fetchData();
+  },[])
+  const submitHandler = async(e) =>{
     e.preventDefault();
-    //implement the backend here -> OK 
-    const response = await fetch(API_BASE, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password })
-    });
-
-    const data = await response.json();
-    if (response.status === 400 || !data) {
-      window.alert("Invalid Credential");
-    } else {
-      console.log(data.token);
-      localStorage.setItem("profile", data.token);
-      window.alert(" Login Successful");
-      // navigate('/');
+    if(!email || !password )
+    {
+       toast({
+         title: "Incomplete Details",
+         description: "Please fill all the fields",
+         status: "info",
+         duration: 2500,
+         isClosable: true,
+         fontSize: "1.5rem",
+       });
+       return;
     }
+    await axios
+      .post(API_BASE + "/login", {
+        email,
+        password,
+      })
+      .then((res) => {
+        
+        toast({
+          title: `${res.data.message}`,
+          description: `Login Successful`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: "top"
+        });
+        console.log("Token: " + res.data.token);
+        localStorage.setItem("profile", res.data.token)
+        console.log(res.data);
+        navigate("/chats");
+      })
+      .catch((error) => {
+        toast({
+          title: "Invalid Credentials",
+          description: `${error.response.data.error}`,
+          status: "error",
+          duration: 2500,
+          isClosable: true,
+          position: "top",
+          className: "custom-toast",
+        });
+      });
   }
 
   return (

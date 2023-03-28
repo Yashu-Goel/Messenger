@@ -46,7 +46,7 @@ const Signup = () => {
     }
     if (!name || !email || !password || !cpassword) {
       toast({
-        title: 'Complete the fills',
+        title: 'Incomplete details',
         description: "Pls fill all the fields",
         status: 'info',
         duration: 2500,
