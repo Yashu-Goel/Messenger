@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from 'react'
 import { Link, Stack } from '@chakra-ui/react'
 import axios from "axios";
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import {
   FormControl,
   FormLabel,
@@ -10,47 +10,26 @@ import {
   InputRightElement,
   Button,
 } from '@chakra-ui/react'
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import '../../App.css'
 const API_BASE = "http://localhost:5000";
 const Login = () => {
-  const navigate= useNavigate();
+
+  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  
+  const submitHandler = async (e) => {
 
-
-  useEffect(()=>
-  {
-     const fetchData = async () => {
-       var token = localStorage.getItem("profile");
-       try {
-         const res = await axios.post(API_BASE +"/validate", {
-          token
-         }).then((res)=>
-         {
-          // navigate("/chats");
-         }).catch((error)=>
-         {
-          console.log("Error: "+ error);
-         })
-       } catch (error) {
-         console.log(error);
-       }
-     };
-     fetchData();
-  },[])
-
-
-  const submitHandler = async(e) =>{
-    e.preventDefault();
-    if(!email || !password )
-    {
-      toast.info("Invalid Credentials", {
+    setLoading(true);
+    if (!email || !password) {
+      toast.info("Empty Fields", {
         theme: "colored",
       });
-       return;
+      return;
     }
     await axios
       .post(API_BASE + "/login", {
@@ -58,18 +37,18 @@ const Login = () => {
         password,
       })
       .then((res) => {
-        toast.success("Login Successful",{
+        toast.success("Login Successful", {
           theme: "colored"
         });
-        localStorage.setItem("profile", res.data.token)
-        setTimeout(() => {
-          navigate("/chats");
-        }, 3000);
+        localStorage.setItem("profile", JSON.stringify(res.data));
+        setLoading(false);
+        navigate('/chats');
       })
       .catch((error) => {
         toast.error("Invalid Credentials!", {
           theme: "colored",
         });
+        setLoading(false);
       });
   }
 
@@ -122,16 +101,12 @@ const Login = () => {
             fontWeight={"bold"}
             fontSize={"15px"}
             onClick={submitHandler}
+            isLoading={loading}
           >
             Login
           </Button>
         </FormControl>
       </Stack>
-      <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        toastClassName="my-toast"
-      />
     </>
   );
 }

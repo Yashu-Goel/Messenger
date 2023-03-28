@@ -15,11 +15,14 @@ import Signup from '../Authentication/Signup'
 import LogoText from '../../Assets/LogoText.png'
 import Logo from '../../Assets/Logo.png'
 import LogoTextWithoutC from "../../Assets/LogoTextWithoutC.png";
+import { ToastContainer, toast } from "react-toastify";
+import '../../App.css'
 
 const HomePage = () => {
-    // const []
+  // const []
 
-    return (
+  return (
+    <>
       <Container
         maxW="xl"
         centerContent
@@ -96,7 +99,13 @@ const HomePage = () => {
           </Tabs>
         </Box>
       </Container>
-    );
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        toastClassName="my-toast"
+      />
+    </>
+  );
 }
 
 export default HomePage

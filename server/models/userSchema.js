@@ -8,21 +8,22 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    unique: true
   },
   password: {
     type: String,
     required: true,
   },
-  token: {
+  pic: {
     type: String,
-  },
+    default: "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541"
+  }
 });
 
 //password hashing
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
-    this.password = await bcrypt.hash(this.password, 12);
-    this.cpassword = await bcrypt.hash(this.password, 12);
+    this.password = await bcrypt.hash(this.password, 12); 
   }
   next();
 });

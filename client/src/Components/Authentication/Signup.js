@@ -12,66 +12,108 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../App.css";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const API_BASE = "http://localhost:5000/";
 const Signup = () => {
 
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
+  const [pic, setPic] = useState();
+  const [loading, setLoading] = useState(false);
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [user, setUser] = useState({
     name: "",
     email: "",
     password: "",
     cpassword: "",
-    pic: "",
   });
-  const postDetails = (pics) => { };
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
+  const handleInputs = (e) => {
+    const { name, value } = e.target;
+    setUser({ ...user, [name]: value });
+  };
 
-    const { name, email, password, cpassword } = user;
-
-    if (cpassword !== password) {
-      toast.error("Wrong Details", {
+  const postDetails = (pics) => {
+    setLoading(true);
+    if (pics === undefined) {
+      toast.warning("Please select an Image!", {
         theme: "colored",
       });
-      
+      setLoading(false);
+      return;
+    }
+
+    if (pics.type === "image/jpeg" || pics.type === "image/png") {
+      const data = new FormData();
+      data.append("file", pics);
+      data.append("upload_preset", "messenger-app");
+      data.append("cloud_name", "dmzxfmkfs")
+      fetch("https://api.cloudinary.com/v1_1/dmzxfmkfs/image/upload", {
+        method: "post",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setPic(data.url.toString());
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+        })
+    }
+    else {
+      toast.warning("Please select an Image!", {
+        theme: "colored",
+      });
+      setLoading(false);
+      return;
+    }
+  };
+
+  const submitHandler = async (e) => {
+    setLoading(true);
+    const { name, email, password, cpassword, pic } = user;
+
+    if (cpassword !== password) {
+      toast.info("Passwords Do not Match", {
+        theme: "colored",
+      });
+      setLoading(false);
       return;
     }
     if (!name || !email || !password || !cpassword) {
-      toast.info("Incomplete details", {
+      toast.info("Please fill all the fields", {
         theme: "colored",
       });
+      setLoading(false);
       return;
     }
 
     await axios.post(API_BASE, {
       name,
       email,
-      password
+      password,
+      pic
     })
       .then((res) => {
-        toast.success("Success😃😃 Redirecting to login page. . .", {
+        toast.success("Registration Success", {
           theme: "colored",
         });
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000)
+        localStorage.setItem("profile", JSON.stringify(res.data));
+        setLoading(false);
+        navigate('/chats');
       })
       .catch((error) => {
-        toast.warn("User Already Exists", {
+        toast.error(`${error.response.data}`, {
           theme: "colored",
         });
+        setLoading(false);
       });
   };
-  const handleInputs = (e) => {
-    const { name, value } = e.target;
-    setUser({ ...user, [name]: value });
-  };
+
   return (
     <>
       <Stack spacing="24px">
@@ -166,16 +208,12 @@ const Signup = () => {
             fontWeight={"bold"}
             fontSize={"15px"}
             onClick={submitHandler}
+            isLoading={loading}
           >
             Signup
           </Button>
         </FormControl>
       </Stack>
-      <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        toastClassName="my-toast"
-      />
     </>
   );
 };

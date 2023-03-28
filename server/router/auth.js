@@ -10,27 +10,36 @@ dotenv.config();
 const JWT_Secret = process.env.JWT_Secret;
 const router = express.Router();
 
-
-
 router.use(express.json());
 router.use(cors());
 
-//Registration(Signup)
-router.get("/", (req, res) => {
-  res.send("Hello World..");
-});
+const generateToken = (id) => {
+  return jwt.sign(id, JWT_Secret);
+}
 
 router.post("/", async (req, res) => {
-  const { name, password, email } = req.body;
+
+  const { name, password, email, pic } = req.body;
+
   try {
     const UserExists = await User.findOne({ email: email });
 
     if (UserExists) {
       return res.status(422).json("User already Exists");
     } else {
-      const user = new User({ name, email, password });
-      await user.save();
-      res.status(200).json("User successfully Registered!");
+
+      const user = await User.create({ name, email, password, pic });
+
+      if (user) {
+        res.status(200).json({
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          pic: user.pic,
+          token: generateToken(user._id.toString())
+        })
+      }
+      else res.status(400).json("Signup failed");
     }
   } catch (error) {
     res.status(422).json(`${error}`);
@@ -43,27 +52,29 @@ router.post("/login", async (req, res) => {
     const details = req.body;
     const { email, password } = details;
 
-    if (!email || !password) {
-      return res.status(400).json({ error: "Please fill all the details" });
-    }
     const userLogin = await User.findOne({ email });
+
     if (userLogin) {
       const isMatch = await bcrypt.compare(password, userLogin.password);
 
-      console.log(isMatch);
       if (!isMatch) {
         return res.status(422).json({ error: "Invalid Credential" });
       } else {
+
         const token = jwt.sign(details, JWT_Secret);
+
         const UserExists = await User.findOne({ email: email });
+
         if (UserExists) {
-          await User.updateOne({ email: email }, { $set: { token: token } });
+          res.status(200).json({
+            _id: UserExists._id,
+            name: UserExists.name,
+            email: UserExists.email,
+            pic: UserExists.pic,
+            token: generateToken(UserExists._id.toString())
+          });
         }
-        res.json({
-          token: token,
-          message: "Login Success!!",
-        });
-        return;
+        else  res.status(400).json("Login Failed");
       }
     } else {
       return res
@@ -95,4 +106,5 @@ router.post("/validate", async (req, res) => {
     res.status(400).json({ Error: err });
   }
 });
+
 export default router;
