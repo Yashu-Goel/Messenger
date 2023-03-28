@@ -4,6 +4,6 @@
     padding: 0;
     box-sizing: border-box;
 }
-.custom-toast > div {
-  font-size: 1.8rem !important;
-}
+.my-toast {
+    font-size: 1.6em;
+  }

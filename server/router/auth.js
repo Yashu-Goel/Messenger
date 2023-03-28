@@ -62,31 +62,32 @@ router.post("/login", async (req, res) => {
         return;
       }
     }
+    else{
+      return res.status(422).json({ error: "User does not exists. Kindly register" });
+    }
   } catch (error) {
     res.json("Invalid Credentials");
   }
 });
 
-router.post("/demo", async (req, res) => {
+//JWT Token Validation
+router.post("/validate", async (req, res) => {
   try {
     const { token } = req.body;
     if (token) {
       const doc = await User.findOne({ token });
-      console.log("doc"+ doc);
       if (doc) {
         const decoded = jwt.verify(token, JWT_Secret);
-        console.log("decode"+ decoded);
+        console.log("decode" + decoded);
         res.status(200).json({ message: "Login" });
       } else {
         res.status(400).json({ error: "Invalid Token" });
       }
     } else {
       res.status(400).json({ Error: "Token not provided" });
-
     }
   } catch (err) {
     res.status(400).json({ Error: err });
-
   }
 });
 module.exports = router;
