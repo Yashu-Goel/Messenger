@@ -1,13 +1,17 @@
-const express = require("express");
-const User = require("../models/userSchema");
-const router = express.Router();
-const cors = require("cors");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv");
+import express from "express";
+import User from "../models/userSchema.js";
+import cors from "cors";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+import "../db/conn.js";
 dotenv.config();
+
 const JWT_Secret = process.env.JWT_Secret;
-require("../db/conn");
+const router = express.Router();
+
+
+
 router.use(express.json());
 router.use(cors());
 
@@ -61,9 +65,10 @@ router.post("/login", async (req, res) => {
         });
         return;
       }
-    }
-    else{
-      return res.status(422).json({ error: "User does not exists. Kindly register" });
+    } else {
+      return res
+        .status(422)
+        .json({ error: "User does not exists. Kindly register" });
     }
   } catch (error) {
     res.json("Invalid Credentials");
@@ -90,4 +95,4 @@ router.post("/validate", async (req, res) => {
     res.status(400).json({ Error: err });
   }
 });
-module.exports = router;
+export default router;

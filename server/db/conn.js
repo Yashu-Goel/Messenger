@@ -1,9 +1,8 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-dotenv.config();
+import { connect } from "mongoose";
+import { config } from "dotenv";
+config();
 const DB = process.env.DATABASE;
-mongoose
-  .connect(DB)
+connect(DB)
   .then(() => {
     console.log("Connected");
   })

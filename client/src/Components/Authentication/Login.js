@@ -30,7 +30,7 @@ const Login = () => {
           token
          }).then((res)=>
          {
-          navigate("/chats");
+          // navigate("/chats");
          }).catch((error)=>
          {
           console.log("Error: "+ error);
