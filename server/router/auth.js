@@ -5,6 +5,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import "../db/conn.js";
+import authUser from "../middleWare.js/authUser.js";
+
 dotenv.config();
 
 const JWT_Secret = process.env.JWT_Secret;
@@ -74,7 +76,7 @@ router.post("/login", async (req, res) => {
             token: generateToken(UserExists._id.toString())
           });
         }
-        else  res.status(400).json("Login Failed");
+        else res.status(400).json("Login Failed");
       }
     } else {
       return res
@@ -86,25 +88,42 @@ router.post("/login", async (req, res) => {
   }
 });
 
-//JWT Token Validation
-router.post("/validate", async (req, res) => {
+router.get('/', authUser, async (req, res) => {
   try {
-    const { token } = req.body;
-    if (token) {
-      const doc = await User.findOne({ token });
-      if (doc) {
-        const decoded = jwt.verify(token, JWT_Secret);
-        console.log("decode" + decoded);
-        res.status(200).json({ message: "Login" });
-      } else {
-        res.status(400).json({ error: "Invalid Token" });
-      }
-    } else {
-      res.status(400).json({ Error: "Token not provided" });
-    }
+    const keyWord = req.query.search ? {
+      $or: [
+        { name: { $regex: req.query.search, $options: "i" } },
+        { email: { $regex: req.query.search, $options: "i" } },
+      ],
+    } : {};
+
+    const users = await User.find(keyWord).find({ _id: { $ne: req.user._id } });
+    res.send(users);
+
   } catch (err) {
     res.status(400).json({ Error: err });
   }
-});
+})
+
+//JWT Token Validation
+// router.post("/validate", async (req, res) => {
+//   try {
+//     const { token } = req.body;
+//     if (token) {
+//       const doc = await User.findOne({ token });
+//       if (doc) {
+//         const decoded = jwt.verify(token, JWT_Secret);
+//         console.log("decode" + decoded);
+//         res.status(200).json({ message: "Login" });
+//       } else {
+//         res.status(400).json({ error: "Invalid Token" });
+//       }
+//     } else {
+//       res.status(400).json({ Error: "Token not provided" });
+//     }
+//   } catch (err) {
+//     res.status(400).json({ Error: err });
+//   }
+// });
 
 export default router;

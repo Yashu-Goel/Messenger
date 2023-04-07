@@ -1,18 +1,20 @@
 import express from 'express';
-import router from './router/auth.js';
 import dotenv from 'dotenv';
+import auth from './router/auth.js';
+import chatRoutes from './router/chatRoutes.js';
+const app = express();
 
 dotenv.config();
-const app = express();
-const PORT = process.env.PORT;
-
 app.use(express.json());
-app.use(router);
 
-app.get('/', (req,res) => {
-res.send("Hello World")
+app.use(auth);
+app.use(chatRoutes);
+
+app.get('/', (req, res) => {
+    res.send("Hello World")
 })
 
-app.listen(PORT,() => {
-console.log(`Listening to port ${PORT}`);
+const PORT = process.env.PORT;
+app.listen(PORT, () => {
+    console.log(`Listening to port ${PORT}`);
 })
