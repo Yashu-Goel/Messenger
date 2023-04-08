@@ -5,14 +5,14 @@ import ChatPage from "./Components/ChatPage/ChatPage";
 
 function App() {
   return (
-    <div >
-      <Router>
-        <Routes>
-          <Route exact path='/' element={<HomePage />} />
-          <Route exact path='/chats' element={<ChatPage />} />
-        </Routes>
-      </Router>
-    </div>
+    // <div>
+    <Router>
+      <Routes>
+        <Route exact path='/' element={<HomePage />} />
+        <Route exact path='/chats' element={<ChatPage />} />
+      </Routes>
+    </Router>
+    // </div>
   );
 }
 

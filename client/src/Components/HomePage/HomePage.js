@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Container,
@@ -12,14 +13,21 @@ import {
 } from "@chakra-ui/react";
 import Login from '../Authentication/Login'
 import Signup from '../Authentication/Signup'
-import LogoText from '../../Assets/LogoText.png'
+// import LogoText from '../../Assets/LogoText.png'
 import Logo from '../../Assets/Logo.png'
 import LogoTextWithoutC from "../../Assets/LogoTextWithoutC.png";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import '../../App.css'
 
 const HomePage = () => {
-  // const []
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const userInfo = (JSON.parse(localStorage.getItem("userInfo")));
+    if (userInfo) {
+      navigate("/chats");
+    }
+  }, [navigate])
 
   return (
     <>
