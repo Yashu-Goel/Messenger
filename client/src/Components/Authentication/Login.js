@@ -29,6 +29,7 @@ const Login = () => {
       toast.info("Empty Fields", {
         theme: "colored",
       });
+      setLoading(false);
       return;
     }
     await axios
@@ -38,8 +39,12 @@ const Login = () => {
       })
       .then((res) => {
         toast.success("Login Successful", {
-          theme: "colored"
-        });
+            theme: "colored",
+          });
+        // setTimeout(function () {
+          
+        // }, 2000);
+        
         localStorage.setItem("profile", JSON.stringify(res.data));
         setLoading(false);
         navigate('/chats');

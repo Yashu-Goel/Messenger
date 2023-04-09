@@ -104,6 +104,7 @@ const Signup = () => {
         });
         localStorage.setItem("profile", JSON.stringify(res.data));
         setLoading(false);
+        
         navigate('/chats');
       })
       .catch((error) => {
