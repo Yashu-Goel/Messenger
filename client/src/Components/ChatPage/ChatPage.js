@@ -1,6 +1,5 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { ChatState } from '../../Context/ChatProvider'
-import SideDrawer from '../Misc/SideDrawer';
 import {
   Box,
   // Container,
@@ -17,8 +16,8 @@ const ChatPage = () => {
   const { user } = ChatState();
 
   return (
-    <div style={{ width: "100%" }}>
-      {user && <SideDrawer />}
+    <div style={{ width: "100%" }}>Chats
+      {/* {user && <SideDrawer />} */}
       <Box>
         {/* {user && <MyChats />} */}
         {/* {user && <ChatBox />} */}
@@ -27,4 +26,4 @@ const ChatPage = () => {
   )
 }
 
-export default ChatPage
+export default ChatPage;

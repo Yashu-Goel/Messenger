@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -13,17 +13,19 @@ import {
 } from "@chakra-ui/react";
 import Login from '../Authentication/Login'
 import Signup from '../Authentication/Signup'
-// import LogoText from '../../Assets/LogoText.png'
 import Logo from '../../Assets/Logo.png'
 import LogoTextWithoutC from "../../Assets/LogoTextWithoutC.png";
 import { ToastContainer } from "react-toastify";
+import { ChatState } from '../../Context/ChatProvider';
 import '../../App.css'
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const { user, setUser } = useContext(ChatState);
+  console.log(user);
 
   useEffect(() => {
-    const userInfo = (JSON.parse(localStorage.getItem("userInfo")));
+    const userInfo = (JSON.parse(localStorage.getItem("profile")));
     if (userInfo) {
       navigate("/chats");
     }
