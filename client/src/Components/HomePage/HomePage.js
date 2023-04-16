@@ -21,8 +21,7 @@ import '../../App.css'
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { user, setUser } = useContext(ChatState);
-  console.log(user);
+  const { user, setUser } = ChatState();
 
   useEffect(() => {
     const userInfo = (JSON.parse(localStorage.getItem("profile")));
