@@ -164,6 +164,7 @@ const Signup = () => {
               onChange={handleInputs}
               m="0 0 1.8rem 0"
               padding={"0 0 0 5px"}
+              minLength={8} //It is not working
             />
           </InputGroup>
 
