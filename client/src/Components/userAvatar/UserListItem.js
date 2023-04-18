@@ -1,9 +1,7 @@
 import { Avatar } from "@chakra-ui/avatar";
 import { Box, Text } from "@chakra-ui/layout";
-import { ChatState } from "../../Context/ChatProvider";
 
-const UserListItem = ({ handleFunction }) => {
-  const { user } = ChatState();
+const UserListItem = ({ user, handleFunction }) => {
 
   return (
     <Box
@@ -32,7 +30,6 @@ const UserListItem = ({ handleFunction }) => {
       />
       <Box>
         <Text>{user.name}</Text>
-        {console.log('okok')}
         <Text fontSize="xs">
           <b>Email : </b>
           {user.email}

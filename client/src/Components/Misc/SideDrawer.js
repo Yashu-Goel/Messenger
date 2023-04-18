@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from "axios";
-import { Box, Tooltip, Button, Text, Menu, MenuButton, Avatar, MenuList, MenuItem, MenuDivider, Input} from '@chakra-ui/react';
+import { Box, Tooltip, Button, Text, Menu, MenuButton, Avatar, MenuList, MenuItem, MenuDivider, Input } from '@chakra-ui/react';
 import UserListItem from "../userAvatar/UserListItem.js";
 import {
   Drawer,
@@ -14,12 +14,10 @@ import { Spinner } from "@chakra-ui/spinner";
 import ProfileModal from "./ProfileModal";
 import { ChatState } from "../../Context/ChatProvider";
 import { BellIcon, ChevronDownIcon } from '@chakra-ui/icons'
-import {useDisclosure} from '@chakra-ui/hooks';
+import { useDisclosure } from '@chakra-ui/hooks';
 import { useToast } from "@chakra-ui/toast";
-// import { toast } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
-// import "../../App.css";
 
+const API_BASE = 'http://localhost:5000';
 
 const SideDrawer = () => {
 
@@ -31,11 +29,9 @@ const SideDrawer = () => {
   const [loadingChat, setLoadingChat] = useState();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { user } = ChatState();
-  const handleSearch = async() =>
-  {
-    if(!search)
-    {
+  const { user, setSelectedChat, chats, setChats } = ChatState();
+  const handleSearch = async () => {
+    if (!search) {
       toast({
         title: "Please Enter something in search",
         status: "warning",
@@ -46,7 +42,7 @@ const SideDrawer = () => {
       return;
     }
 
-     try {
+    try {
       setLoading(true);
 
       const config = {
@@ -55,7 +51,7 @@ const SideDrawer = () => {
         },
       };
 
-      const { data } = await axios.get(`/api/user?search=${search}`, config);
+      const { data } = await axios.get(API_BASE + `/?search=${search}`, config);
 
       setLoading(false);
       setSearchResult(data);
@@ -71,9 +67,36 @@ const SideDrawer = () => {
     }
   }
 
-  const accessChat = (userId) =>
-  {
+  const accessChat = async (userId) => {
+    try {
+      setLoadingChat(true);
 
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user.token}`
+        }
+      }
+
+      const { data } = await axios.post(API_BASE + '/chat', { userId }, config);
+
+      if (!chats.find((c) => c._id === data._id))
+        setChats([data, ...chats]);
+
+      setSelectedChat(data);
+      setLoadingChat(false);
+      onClose();
+
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
   }
   return (
     <>
@@ -137,17 +160,17 @@ const SideDrawer = () => {
               />
               <Button onClick={handleSearch}>Go</Button>
             </Box>
-            {loading ? (
+            {loading ?
               <ChatLoading />
-            ) : (
-              searchResult?.map((user) => (
+              :
+              (searchResult?.map((user) => (
                 <UserListItem
                   key={user._id}
                   user={user}
                   handleFunction={() => accessChat(user._id)}
                 />
-              ))
-            )}
+              )))
+            }
             {loadingChat && <Spinner ml="auto" d="flex" />}
           </DrawerBody>
         </DrawerContent>

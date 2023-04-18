@@ -39,7 +39,7 @@ const accessChat = async (req, res) => {
                 const fullChat = await Chat.findOne({ _id: createdChat._id })
                     .populate("users", "-password")
 
-                res.status(200).send(fullChat); s
+                res.status(200).send(fullChat);
             }
             catch (error) {
                 res.send(404);
@@ -61,7 +61,7 @@ const fetchChats = async (req, res) => {
             .then(async (results) => {
                 results = await User.populate(results, {
                     path: "latestMessage.sender",
-                    select: "name puc email"
+                    select: "name pic email"
                 });
                 res.status(200).send(results);
             })
@@ -196,7 +196,6 @@ const groupRemove = async (req, res) => {
         res.status(400).send(error.message);
     }
 }
-
 
 
 export { accessChat, fetchChats, createGroup, renameGroup, groupAdd, groupRemove };
