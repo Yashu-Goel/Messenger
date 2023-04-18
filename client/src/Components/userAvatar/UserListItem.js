@@ -32,6 +32,7 @@ const UserListItem = ({ handleFunction }) => {
       />
       <Box>
         <Text>{user.name}</Text>
+        {console.log('okok')}
         <Text fontSize="xs">
           <b>Email : </b>
           {user.email}

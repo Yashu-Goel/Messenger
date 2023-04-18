@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from "axios";
 import { Box, Tooltip, Button, Text, Menu, MenuButton, Avatar, MenuList, MenuItem, MenuDivider, Input} from '@chakra-ui/react';
-import UserListItem from "../userAvatar/UserListItem";
+import UserListItem from "../userAvatar/UserListItem.js";
 import {
   Drawer,
   DrawerBody,
