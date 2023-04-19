@@ -137,8 +137,10 @@ const SideDrawer = () => {
               ></Avatar>
             </MenuButton>
             <MenuList>
-              <MenuItem>My Proflie</MenuItem>
-              <MenuDivider></MenuDivider>
+              <ProfileModal user={user}>
+                <MenuItem>My Profile</MenuItem>{" "}
+              </ProfileModal>
+              <MenuDivider />
               <MenuItem>Logout</MenuItem>
             </MenuList>
           </Menu>

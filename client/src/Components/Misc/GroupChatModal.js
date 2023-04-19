@@ -18,10 +18,12 @@ import { useState } from "react";
 import { ChatState } from "../../Context/ChatProvider";
 import UserBadgeItem from "../userAvatar/UserBadgeItem";
 import UserListItem from "../userAvatar/UserListItem";
+import ChatLoading from "../ChatLoading";
 
 const API_BASE = "http://localhost:5000";
 
 const GroupChatModal = ({ children }) => {
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [groupChatName, setGroupChatName] = useState();
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -33,6 +35,7 @@ const GroupChatModal = ({ children }) => {
   const { user, chats, setChats } = ChatState();
 
   const handleGroup = (userToAdd) => {
+
     if (selectedUsers.includes(userToAdd)) {
       toast({
         title: "User already added",
@@ -61,10 +64,9 @@ const GroupChatModal = ({ children }) => {
         },
       };
       const { data } = await axios.get(
-        API_BASE + `/?search=${search}`, // not working properly
+        API_BASE + `/?search=${search}`,
         config
       );
-      console.log(data);
       setLoading(false);
       setSearchResult(data);
     } catch (error) {
@@ -101,8 +103,7 @@ const GroupChatModal = ({ children }) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.post(API_BASE +
-        `/chat/group`,
+      const { data } = await axios.post(API_BASE + `/group`,
         {
           name: groupChatName,
           users: JSON.stringify(selectedUsers.map((u) => u._id)),
@@ -118,6 +119,10 @@ const GroupChatModal = ({ children }) => {
         isClosable: true,
         position: "bottom",
       });
+      setGroupChatName("");
+      setSelectedUsers([]);
+      setSearch("");
+      setSearchResult([]);
     } catch (error) {
       toast({
         title: "Failed to Create the Chat!",
@@ -171,8 +176,7 @@ const GroupChatModal = ({ children }) => {
               ))}
             </Box>
             {loading ? (
-              // <ChatLoading />
-              <div>Loading...</div>
+              <ChatLoading />
             ) : (
               searchResult
                 ?.slice(0, 4)
