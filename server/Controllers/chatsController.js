@@ -165,7 +165,7 @@ const groupAdd = async (req, res) => {
 const groupRemove = async (req, res) => {
 
     const { groupId, userId } = req.body;
-
+    
     const currGroup = await Chat.findById(groupId);
 
     if (currGroup.groupAdmin._id == userId) {

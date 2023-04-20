@@ -4,6 +4,7 @@ import { Box, IconButton, Text } from '@chakra-ui/react'
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { getSender, getSenderFull } from './config/getSender';
 import ProfileModal from './Misc/ProfileModal';
+import UpdateGroupChatModal from './Misc/UpdateGroupChatModal';
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
@@ -43,7 +44,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                                             selectedChat.chatName.toUpperCase()
                                         }
                                         {
-
+                                            <UpdateGroupChatModal
+                                                fetchAgain={fetchAgain}
+                                                setFetchAgain={setFetchAgain}
+                                            />
                                         }
                                     </>
                                 )
