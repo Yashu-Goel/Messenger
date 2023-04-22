@@ -34,16 +34,12 @@ const accessChat = async (req, res) => {
                 users: [req.user._id, userId],
             };
 
-            try {
-                const createdChat = await Chat.create(newChat);
-                const fullChat = await Chat.findOne({ _id: createdChat._id })
-                    .populate("users", "-password")
+            const createdChat = await Chat.create(newChat);
+            const fullChat = await Chat.findOne({ _id: createdChat._id })
+                .populate("users", "-password")
 
-                res.status(200).send(fullChat);
-            }
-            catch (error) {
-                res.send(404);
-            }
+            res.status(200).send(fullChat);
+
         }
     }
     catch (error) {
@@ -165,7 +161,7 @@ const groupAdd = async (req, res) => {
 const groupRemove = async (req, res) => {
 
     const { groupId, userId } = req.body;
-    
+
     const currGroup = await Chat.findById(groupId);
 
     if (currGroup.groupAdmin._id == userId) {
@@ -196,6 +192,5 @@ const groupRemove = async (req, res) => {
         res.status(400).send(error.message);
     }
 }
-
 
 export { accessChat, fetchChats, createGroup, renameGroup, groupAdd, groupRemove };
