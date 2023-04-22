@@ -1,14 +1,85 @@
-import React from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 import { ChatState } from '../Context/ChatProvider'
-import { Box, IconButton, Text } from '@chakra-ui/react'
+import { Box, FormControl, IconButton, Input, Spinner, Text, useToast } from '@chakra-ui/react'
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { getSender, getSenderFull } from './config/getSender';
 import ProfileModal from './Misc/ProfileModal';
 import UpdateGroupChatModal from './Misc/UpdateGroupChatModal';
+import axios from 'axios';
+
+
+const API_BASE = 'http://localhost:5000'
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
+    const [messages, setMessages] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [newMessage, setNewMessage] = useState();
+
+    const toast = useToast();
     const { user, selectedChat, setSelectedChat } = ChatState();
+
+    const fetchMessages = async (event) => {
+        if (!selectedChat) return;
+
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${user.token}`
+                }
+            }
+
+            setLoading(true);
+            const { data } = await axios.get(API_BASE + '/message/${selectedChat._id}', config);
+
+            setMessages(data);
+            setLoading(false);
+        } catch (error) {
+            toast({
+                title: "Error Occured",
+                status: "Failed to send the message",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom",
+            });
+        }
+    }
+    useEffect(() => {
+        fetchMessages()
+    },[selectedChat])
+    const sentMessage = async (e) => {
+
+        if (e.key === 'Enter' && newMessage) {
+            try {
+                const config = {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${user.token}`
+                    }
+                }
+
+                const { data } = await axios.post(API_BASE + '/message', {
+                    content: newMessage,
+                    chatId: selectedChat._id
+                }, config)
+
+
+                setNewMessage("");
+                setMessages([...messages, data])
+            } catch (error) {
+                toast({
+                    title: "Error Occured",
+                    status: "Failed to send the message",
+                    duration: 5000,
+                    isClosable: true,
+                    position: "bottom",
+                });
+            }
+        }
+    }
+    const typingHandler = (e) => {
+        setNewMessage(e.target.value)
+    }
 
     return (
         <>
@@ -61,9 +132,29 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                             w='100%'
                             h='100%'
                             borderRadius='lg'
-                            overflowY='hidden'
-                        >
+                            overflowY='hidden'>
+                            {loading ? <Spinner
+                                size='xl'
+                                w='20'
+                                h='20'
+                                alignSelf='center'
+                                margin='auto'
+                            /> : (<div>
 
+                            </div>)}
+                            <FormControl
+                                onKeyDown={sentMessage}
+                                isRequired
+                                mt={3}
+                            >
+                                <Input
+                                    variant='filled'
+                                    bg='#E0E0E0'
+                                    placeholder='Type a message'
+                                    onChange={typingHandler}
+                                    value={newMessage}
+                                />
+                            </FormControl>
                         </Box>
                     </>
                 ) : (
