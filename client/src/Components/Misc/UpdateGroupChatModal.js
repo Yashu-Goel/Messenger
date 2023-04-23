@@ -22,7 +22,7 @@ import { Button } from "@chakra-ui/button"
 import UserBadgeItem from '../userAvatar/UserBadgeItem';
 import axios from 'axios'
 const API_BASE = 'http://localhost:5000';
-const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
+const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -76,6 +76,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
 
             setSelectedChat(data);
             setFetchAgain(!fetchAgain);
+            fetchMessages();
             setLoading(false);
         } catch (error) {
             toast({

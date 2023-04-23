@@ -1,12 +1,13 @@
 import React, { createContext, useEffect, useState } from 'react'
 import { ChatState } from '../Context/ChatProvider'
-import { Box, FormControl, IconButton, Input, Spinner, Text, useToast } from '@chakra-ui/react'
+import { Box, FormControl, IconButton, Input, Spinner, Text, useToast, Center } from '@chakra-ui/react'
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { getSender, getSenderFull } from './config/getSender';
 import ProfileModal from './Misc/ProfileModal';
 import UpdateGroupChatModal from './Misc/UpdateGroupChatModal';
 import axios from 'axios';
-
+import ScrollableChat from './ScrollableChat';
+import './styles.css'
 
 const API_BASE = 'http://localhost:5000'
 
@@ -28,9 +29,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     Authorization: `Bearer ${user.token}`
                 }
             }
-
             setLoading(true);
-            const { data } = await axios.get(API_BASE + '/message/${selectedChat._id}', config);
+
+            const { data } = await axios.get(API_BASE + `/message/${selectedChat._id}`, config);
 
             setMessages(data);
             setLoading(false);
@@ -44,11 +45,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             });
         }
     }
+
     useEffect(() => {
         fetchMessages()
-    },[selectedChat])
-    const sentMessage = async (e) => {
+    }, [selectedChat])
 
+    const sentMessage = async (e) => {
         if (e.key === 'Enter' && newMessage) {
             try {
                 const config = {
@@ -58,14 +60,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     }
                 }
 
-                const { data } = await axios.post(API_BASE + '/message', {
+                const { data } = await axios.post(API_BASE + `/message`, {
                     content: newMessage,
                     chatId: selectedChat._id
                 }, config)
 
-
                 setNewMessage("");
                 setMessages([...messages, data])
+
             } catch (error) {
                 toast({
                     title: "Error Occured",
@@ -77,6 +79,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             }
         }
     }
+
     const typingHandler = (e) => {
         setNewMessage(e.target.value)
     }
@@ -118,6 +121,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                                             <UpdateGroupChatModal
                                                 fetchAgain={fetchAgain}
                                                 setFetchAgain={setFetchAgain}
+                                                fetchMessages={fetchMessages}
                                             />
                                         }
                                     </>
@@ -126,6 +130,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                         </Text>
                         <Box
                             display={'flex'}
+                            flexDir={'column'}
                             justifyContent={'flex-end'}
                             p={3}
                             bg='#E8E8E8'
@@ -133,19 +138,16 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                             h='100%'
                             borderRadius='lg'
                             overflowY='hidden'>
-                            {loading ? <Spinner
-                                size='xl'
-                                w='20'
-                                h='20'
-                                alignSelf='center'
-                                margin='auto'
-                            /> : (<div>
 
+                            {loading ? <Spinner
+                                mb={'200'}
+                                margin={'auto'}
+                            /> : (<div className='messages'>
+                                <ScrollableChat messages={messages} />
                             </div>)}
                             <FormControl
                                 onKeyDown={sentMessage}
                                 isRequired
-                                mt={3}
                             >
                                 <Input
                                     variant='filled'
