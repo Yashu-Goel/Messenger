@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ChatState } from "../../Context/ChatProvider";
 import { useToast, Text } from "@chakra-ui/react";
-import { Box, Stack } from "@chakra-ui/layout"
+import { Box } from "@chakra-ui/layout"
 import { Button } from "@chakra-ui/button"
 import { AddIcon } from "@chakra-ui/icons"
 import ChatLoading from "../ChatLoading";

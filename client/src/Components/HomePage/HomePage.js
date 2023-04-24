@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -16,12 +16,10 @@ import Signup from '../Authentication/Signup'
 import Logo from '../../Assets/Logo.png'
 import LogoTextWithoutC from "../../Assets/LogoTextWithoutC.png";
 import { ToastContainer } from "react-toastify";
-import { ChatState } from '../../Context/ChatProvider';
 import '../../App.css'
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { user, setUser } = ChatState();
 
   useEffect(() => {
     const userInfo = (JSON.parse(localStorage.getItem("profile")));

@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChatState } from "../Context/ChatProvider";
 import {
   Box,
@@ -8,7 +8,6 @@ import {
   Spinner,
   Text,
   useToast,
-  Center,
 } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { getSender, getSenderFull } from "./config/getSender";
@@ -18,10 +17,11 @@ import axios from "axios";
 import ScrollableChat from "./ScrollableChat";
 import "./styles.css";
 import io from "socket.io-client";
-import {Lottie} from 'react-'
 const API_BASE = "http://localhost:5000";
 var socket, selectedChatCompare;
+
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
+
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState();
@@ -29,21 +29,20 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [typing, setTyping] = useState(false);
   const [istyping, setIsTyping] = useState(false);
   const toast = useToast();
-  const { user, selectedChat, setSelectedChat } = ChatState();
+  const { user, selectedChat, setSelectedChat, notification, setNotification } = ChatState();
 
 
-     useEffect(() => {
-       socket = io(API_BASE);
-       socket.emit("setup", user);
-       socket.on("connected", () => {
-         setSocketConnected(true);
-       });
-           socket.on("typing", () => setIsTyping(true));
-           socket.on("stop typing", () => setIsTyping(false));
+  useEffect(() => {
+    socket = io(API_BASE);
+    socket.emit("setup", user);
+    socket.on("connected", () => {
+      setSocketConnected(true);
+    });
+    socket.on("typing", () => setIsTyping(true));
+    socket.on("stop typing", () => setIsTyping(false));
+  });
 
-     }, []);
 
-     
   const fetchMessages = async (event) => {
     if (!selectedChat) return;
 
@@ -84,9 +83,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
-      if (!selectedChatCompare || selectedChatCompare._id !== newMessageRecieved.chat._id) 
-      {
-        // notification
+      if (!selectedChatCompare || selectedChatCompare._id !== newMessageRecieved.chat._id) {
+        if (!notification.includes(newMessageRecieved)) {
+          setNotification([newMessageRecieved, ...notification]);
+          setFetchAgain(!fetchAgain);
+        }
       } else {
         setMessages([...messages, newMessageRecieved]);
       }
@@ -95,7 +96,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   const sentMessage = async (e) => {
     if (e.key === "Enter" && newMessage) {
-        socket.emit('Stop Typing', selectedChat._id)
+      socket.emit('Stop Typing', selectedChat._id)
       try {
         const config = {
           headers: {
@@ -127,7 +128,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       }
     }
   };
- 
+
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
 
@@ -138,7 +139,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       socket.emit("typing", selectedChat._id);
     }
     let lastTypingTime = new Date().getTime();
-    var timerLength = 3000;
+    var timerLength = 1500;
+
     setTimeout(() => {
       var timeNow = new Date().getTime();
       var timeDiff = timeNow - lastTypingTime;
@@ -170,7 +172,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             />
             {!selectedChat.isGroupChat ? (
               <>
-                {getSender(user, selectedChat.users)}
+                {istyping ? (<>{getSender(user, selectedChat.users)}
+                  <> is typing...</></>) : getSender(user, selectedChat.users)}
                 <ProfileModal user={getSenderFull(user, selectedChat.users)} />
               </>
             ) : (
@@ -205,7 +208,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               </div>
             )}
             <FormControl onKeyDown={sentMessage} isRequired>
-                {istyping?<div>Loading... </div>:(<></>)}
               <Input
                 variant="filled"
                 bg="#E0E0E0"

@@ -9,7 +9,7 @@ import {
   InputRightElement,
   Button,
 } from "@chakra-ui/react";
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../App.css";
 import { useNavigate } from "react-router-dom";
@@ -36,6 +36,7 @@ const Signup = () => {
   };
 
   const postDetails = (pics) => {
+    
     setLoading(true);
     if (pics === undefined) {
       toast.warning("Please select an Image!", {
@@ -75,7 +76,7 @@ const Signup = () => {
 
   const submitHandler = async (e) => {
     setLoading(true);
-    const { name, email, password, cpassword, pic } = user;
+    const { name, email, password, cpassword } = user;
 
     if (cpassword !== password) {
       toast.info("Passwords Do not Match", {

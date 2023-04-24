@@ -16,6 +16,7 @@ import { ChatState } from "../../Context/ChatProvider";
 import { BellIcon, ChevronDownIcon } from '@chakra-ui/icons'
 import { useDisclosure } from '@chakra-ui/hooks';
 import { useToast } from "@chakra-ui/toast";
+import { getSender } from '../config/getSender'
 
 const API_BASE = 'http://localhost:5000';
 
@@ -29,7 +30,7 @@ const SideDrawer = () => {
   const [loadingChat, setLoadingChat] = useState();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { user, setSelectedChat, chats, setChats } = ChatState();
+  const { user, setSelectedChat, chats, setChats, notification, setNotification } = ChatState();
   const handleSearch = async () => {
     if (!search) {
       toast({
@@ -124,8 +125,25 @@ const SideDrawer = () => {
         <div>
           <Menu>
             <MenuButton p={1}>
+              {
+                notification.length > 0 && <span className="e-badge e-badge-success e-badge-overlap e-badge-notification">{notification.length}</span>
+              }
               <BellIcon fontSize={"2xl"} m={1}></BellIcon>
             </MenuButton>
+
+            <MenuList p={2}>
+              {!notification.length && "No New Messages"}
+              {notification.map((notif) => (
+                <MenuItem key={notif._id}
+                  onClick={() => {
+                    setSelectedChat(notif.chat);
+                    setNotification(notification.filter((n) => n !== notif));
+                  }}
+                >
+                  {notif.chat.isGroupChat ? `New Message from ${notif.chat.chatName}` : `New Message from ${getSender(user, notif.chat.users)}`}
+                </MenuItem>
+              ))}
+            </MenuList>
           </Menu>
           <Menu>
             <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
