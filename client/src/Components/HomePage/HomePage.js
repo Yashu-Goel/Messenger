@@ -14,7 +14,7 @@ import {
 import Login from '../Authentication/Login'
 import Signup from '../Authentication/Signup'
 import Logo from '../../Assets/Logo.png'
-import LogoTextWithoutC from "../../Assets/LogoTextWithoutC.png";
+
 import { ToastContainer } from "react-toastify";
 import '../../App.css'
 
@@ -71,11 +71,10 @@ const HomePage = () => {
             <TabList>
               <Tab
                 width="50%"
-                fontSize="16px"
-                fontWeight="500
-                        "
+                fontWeight="500"
                 borderRadius={"25px"}
                 _selected={{ color: "white", bg: "blue.500" }}
+                
               >
                 Login
               </Tab>

@@ -17,6 +17,7 @@ import axios from "axios";
 import ScrollableChat from "./ScrollableChat";
 import "./styles.css";
 import io from "socket.io-client";
+
 const API_BASE = "http://localhost:5000";
 var socket, selectedChatCompare;
 
