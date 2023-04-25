@@ -176,8 +176,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             />
             {!selectedChat.isGroupChat ? (
               <>
-                {istyping ? (<>{getSender(user, selectedChat.users)}
-                  <> is typing...</></>) : getSender(user, selectedChat.users)}
+                {istyping ? (
+                  <>
+                    {getSender(user, selectedChat.users)}
+                    <> is typing...</>
+                  </>
+                ) : (
+                  getSender(user, selectedChat.users)
+                )}
                 <ProfileModal user={getSenderFull(user, selectedChat.users)} />
               </>
             ) : (
@@ -194,15 +200,15 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             )}
           </Text>
           <Box
-            display={"flex"}
-            flexDir={"column"}
+            // display={"flex"}
+            // flexDir={"column"}
             justifyContent={"flex-end"}
             p={3}
             bg="#E8E8E8"
             w="100%"
             h="100%"
             borderRadius="lg"
-            overflowY="hidden"
+            overflowY="scroll"
           >
             {loading ? (
               <Spinner mb={"200"} margin={"auto"} />
@@ -211,16 +217,18 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 <ScrollableChat messages={messages} />
               </div>
             )}
-            <FormControl onKeyDown={sentMessage} isRequired>
-              <Input
-                variant="filled"
-                bg="#E0E0E0"
-                placeholder="Type a message"
-                onChange={typingHandler}
-                value={newMessage}
-              />
-            </FormControl>
           </Box>
+
+          <FormControl onKeyDown={sentMessage} isRequired>
+            <Input
+              variant="filled"
+              bg="#E0E0E0"
+              placeholder="Type a message"
+              onChange={typingHandler}
+              value={newMessage}
+              width={"98.5%"}
+            />
+          </FormControl>
         </>
       ) : (
         <Box
