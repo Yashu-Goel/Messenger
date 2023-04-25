@@ -53,16 +53,9 @@ const HomePage = () => {
             <Image
               src={Logo}
               boxSize="50px"
-              width="45px"
-              height="45px"
+              width="14rem"
               alt="LogoText"
-            />
-            <Image
-              src={LogoTextWithoutC}
-              boxSize="50px"
-              width="180px"
-              alt="LogoText"
-            />
+            />     
           </Center>
         </Box>
         <Box
