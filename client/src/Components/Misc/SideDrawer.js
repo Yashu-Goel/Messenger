@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from "axios";
-import { Box, Tooltip, Button, Text, Menu, MenuButton, Avatar, MenuList, MenuItem, MenuDivider, Input } from '@chakra-ui/react';
+import { Box, Tooltip, Button, Text, Menu, MenuButton, Avatar, MenuList, MenuItem, MenuDivider, Input, Image  } from '@chakra-ui/react';
 import UserListItem from "../userAvatar/UserListItem.js";
 import {
   Drawer,
@@ -17,7 +17,7 @@ import { BellIcon, ChevronDownIcon } from '@chakra-ui/icons'
 import { useDisclosure } from '@chakra-ui/hooks';
 import { useToast } from "@chakra-ui/toast";
 import { getSender } from '../config/getSender'
-
+import LogoText from '../../Assets/LogoText.png'
 const API_BASE = 'http://localhost:5000';
 
 const SideDrawer = () => {
@@ -119,9 +119,9 @@ const SideDrawer = () => {
           </Button>
         </Tooltip>
 
-        <Text fontSize="2xl" fontFamily="Work-sans">
-          Charcha
-        </Text>
+        <img src={LogoText} width="145px"/>
+          
+        
         <div>
           <Menu>
             <MenuButton p={1}>

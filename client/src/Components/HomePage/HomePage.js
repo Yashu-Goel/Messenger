@@ -47,6 +47,7 @@ const HomePage = () => {
           m="0px 0 15px 0"
           borderRadius="1rem"
           borderWidth="1px"
+          
         >
           <Center>
             <Image
