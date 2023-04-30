@@ -200,8 +200,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             )}
           </Text>
           <Box
-            // display={"flex"}
-            // flexDir={"column"}
             justifyContent={"flex-end"}
             p={3}
             bg="#E8E8E8"

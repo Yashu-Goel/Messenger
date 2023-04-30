@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { ChatState } from "../../Context/ChatProvider";
 import { useToast, Text } from "@chakra-ui/react";
-import { Box } from "@chakra-ui/layout"
-import { Button } from "@chakra-ui/button"
-import { AddIcon } from "@chakra-ui/icons"
+import { Box } from "@chakra-ui/layout";
+import { Button } from "@chakra-ui/button";
+import { AddIcon } from "@chakra-ui/icons";
 import ChatLoading from "../ChatLoading";
-import { getSender } from '../config/getSender';
-import GroupChatModal from './GroupChatModal';
-import axios from 'axios';
+import { getSender } from "../config/getSender";
+import GroupChatModal from "./GroupChatModal";
+import axios from "axios";
 
-const API_BASE = 'http://localhost:5000';
+const API_BASE = "http://localhost:5000";
 
 const MyChats = ({ fetchAgain }) => {
-
   const [loggedUser, setLoggedUser] = useState();
   const { user, selectedChat, setSelectedChat, chats, setChats } = ChatState();
 
@@ -23,13 +22,12 @@ const MyChats = ({ fetchAgain }) => {
       const config = {
         headers: {
           "Content-type": "application/json",
-          Authorization: `Bearer ${user.token}`
+          Authorization: `Bearer ${user.token}`,
         },
       };
 
-      const { data } = await axios.get(API_BASE + '/chat', config);
+      const { data } = await axios.get(API_BASE + "/chat", config);
       setChats(data);
-
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -40,12 +38,14 @@ const MyChats = ({ fetchAgain }) => {
         position: "bottom-left",
       });
     }
-  }
+  };
 
   useEffect(() => {
-    setLoggedUser(JSON.parse(localStorage.getItem('profile')));
+    setLoggedUser(JSON.parse(localStorage.getItem("profile")));
     fetchChats();
-  }, [fetchAgain])
+  }, [fetchAgain]);
+
+
   return (
     <Box
       display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
@@ -56,7 +56,6 @@ const MyChats = ({ fetchAgain }) => {
       w={{ base: "100%", md: "31%" }}
       borderRadius="lg"
       borderWidth="1px"
-      
     >
       <Box
         pb={3}
@@ -118,6 +117,6 @@ const MyChats = ({ fetchAgain }) => {
       </Box>
     </Box>
   );
-}
+};
 
-export default MyChats
+export default MyChats;
